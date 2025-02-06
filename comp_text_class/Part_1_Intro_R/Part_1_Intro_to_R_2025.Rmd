@@ -103,6 +103,7 @@ library(tidyverse)
 library(rio)
 #load the library for janitor
 library(janitor)
+library(dplyr)
 ```
 
 Check to see what's installed by clicking on "Packages" tab in File
@@ -342,26 +343,54 @@ Questions
 ```{r}
 #1: Build a table for NewYorkTimes employees   
 
+New_York_Times <- subset(MediaBucks, grepl("?NewYorkTimes", COMPANY)) |> 
+  clean_names()
+
 
 ```
 
 ```{r}
 #2: Determine median salary of NewYorkTimes employees   
 
+New_York_Times |> 
+  summarise(median_salary = median(Salary))
+
 
 ```
 
 ```{r}
 #3: Identify title, gender and race of the highest paid position at NYT  
+New_York_Times |> 
+  select(salary, title, gender, race) |>
+  arrange(desc(salary))
 
+# The highest paid position is Executive News Editor, who is black and gets paid 350000, does not list the gender. 
 
 ```
 
+
 ```{r}
 #4: Build a table that filters "Business" in the Company column. Determine Summary of the Salary column.
+
+business_companies <- subset(MediaBucks, grepl("?Business", COMPANY)) |> 
+  clean_names() |> 
+  summarise(total_salary = sum(salary)) |>
+  print()
+```
+
 #Build a second table that filters "Bloomberg" in the Company column.  Determine Summary of the Salary column.
 
-#Which one is higher?
+```{r}
+
+Bloom <- subset(MediaBucks, grepl("?Bloomberg", COMPANY)) |>
+  clean_names() |> 
+summarise(total_salary = sum(salary)) |> 
+  print()
+
+            
+            #Which one is higher? Bloomberg's total salary is 1155540 and the business is 765818, so Bloomberg is higher. ]]]]]]
+
+
 
 
 ```
