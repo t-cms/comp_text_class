@@ -353,7 +353,7 @@ New_York_Times <- subset(MediaBucks, grepl("?NewYorkTimes", COMPANY)) |>
 #2: Determine median salary of NewYorkTimes employees   
 
 New_York_Times |> 
-  summarise(median_salary = median(Salary))
+  summarise(median_salary = median(salary))
 
 
 ```
@@ -414,10 +414,27 @@ Questions:
 
 ```         
 1: Who is making $230,504 as a reporter???   
+
+```{r}
+Reporters |> 
+filter(salary == 230,504)
+```
+
+
+```{r}
+Reporters |> 
+filter(salary == "230,504")
+```
+
+
+
+
+
+
 2: Make a table for editors, figure out medians.   
 3: Find highest paid editor. Resent them.   
 4: Make a table for any position involving data  
-```
+
 
 Table with Black reporters at Wall Street Journal
 
@@ -466,6 +483,8 @@ How to obtain summary statistics (summary)
 How to build basic tables from a dataset   
 How to conduct filter queries from a dataset   
 ```
+
+```{r}
 
 <br>
 

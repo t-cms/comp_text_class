@@ -1,0 +1,97 @@
+---
+title: "Basic R Proficiency Assignment"
+author: "Tiasia Saunders"
+date: "2025-02-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(janitor)
+library(dplyr)
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+mob_analysis <- read_csv("https://raw.githubusercontent.com/wellsdata/CompText_Jour/main/data/mob_analysis_data.csv") 
+
+
+
+```
+
+
+
+ describe the number of rows and columns in the dataset
+ 
+```{r}
+ nrow(mob_analysis)
+```
+ 
+```{r}
+ncol(mob_analysis)
+```
+ 
+
+--Create a table that displays a count of the top 15 newspaper entries
+```{r}
+top_newspapers <- mob_analysis |>
+  count(Newspaper)|> 
+  top_n(15, n) |>
+  arrange(desc( n))
+print(top_newspapers)
+```
+
+
+--Create a table that counts the different entries in the "keyword" column
+
+```{r}
+keyword_count <- mob_analysis |> 
+  count(keyword) |>
+print(keyword_count)
+  
+```
+
+--Create a table that counts all entries by year
+
+```{r}
+year_count <- mob_analysis |> 
+count(Year) |> 
+  arrange(desc(n))
+```
+
+--Create a simple column ggplot chart that shows the total entries by year
+```{r}
+
+mob_analysis <- mob_analysis |>
+  mutate(Year = Year(as.Date(date)))
+
+year_count <- mob_data |>
+  count(Year)
+
+ggplot(year_count, aes(x = factor(Year), y = n)) +
+  geom_col(fill = "steelblue") +
+  labs(title = "Total Entries by Year",
+       x = "Year",
+       y = "Total Entries") +
+  theme_minimal()
+
+#need to figure out how to space out the x-axis so that I can see each year clearly
+```
+
+
+
+Armed with your data analysis, write a 250 word memo at the end of the R markdown document that summarizes your findings. Use this opportunity to ask questions or note any major flaws in the data.
+
+Analysis: 
+With the coding results, I found that most of the newspaper entries came from The Birmingham Age- Herald with a total of 118 entries. Honestly, this is not surprising considering the state's dark history with racism and discrimination. The least 3 entries at a count of 28 came from The Salt Lake Hearld, The smei-weekly messenger (NC) and the Wausau Pilot (WI). Additionally, I found that majority of 'mob' mentioned entries happened in 1902 at 246, 1906, at 207, and 1901 at 197. With the passing of the Jim Crow Laws and animosity toward freed African Americans, it is understandable why it was discussed a lot during this time. Despite this, I assumed that the majority of news outlets would talk more about it with the ending of slavery and the Civil War in the 1860s. As the 1900s moved on, the number starts to decrease with 1944, 1947, and 1951 having one mob entry. 
+
+Questions/ Potential Flaws: 
+I do need to figure out how to space out my x-axis so that the years can be seen clearly to better understand my graph. Also, I attempted to clean the data with the clean_names function but for some reason it wasn't working despite me ensuring that I loaded the Janitor library. Hopefully, we can talk about it during class, but I want to fix that to ensure that the dataset is clean and easy to work with. Also, I would prefer if the newspaper column entries were capitalized for the news outlets. 
