@@ -21,18 +21,20 @@ Class exercise to import your project data into R
 library(tidyverse)
 library(janitor)
 library(rio)
+library(dplyr)
 ```
 #Import your data 
 ```{r}
 
-bmore <- rio::import("breana Results list for__crime_ _Baltimore_.XLSX")
+trump_dei_news<- rio::import("trump_dei_news.XLSX")
+
+#import my stuff correctly 
 
 ```
 # Clean names
 ```{r}
-bmore <- bmore |> 
+trump_dei_news <- trump_dei_news |>
   clean_names()
-
 ```
 
 
@@ -42,21 +44,69 @@ bmore <- bmore |>
   mutate(date = as.Date(strptime(published_date, format = "%B %d, %Y %A")))
 ```
 
-# My claude.ai query and reply:
-Q: In r, i need to create a new properly formatted date column from a "published_date" column with character data that looks like this: "January 14, 2025 Tuesday",  - how do I transform it into a date format?
+How many rows and columns does this dataset has? 
 
-A: You can use the as.Date() function along with strptime() to convert that date format. Here's how:
+```{r}
 
-df <- df |>
-  mutate(new_date = as.Date(strptime(published_date, format = "%B %d, %Y %A")))
+print(paste0("This dataset has ", nrow(trump_dei_news), " rows and ", ncol(trump_dei_news), " columns."))
+
+
+```
+
+Create a table that displays a count of the top 20 newspaper_city entries. Filter out the NA values. 
+
+```{r}
+top_newspapers <- trump_dei_news |>
+  filter(!is.na(publication_4)) |> 
+  count(publication_4)|> 
+  top_n(20, n) |>
+  arrange(desc( n)) |>
+print(top_newspapers)
+
+#have a question about the columns named, publication_4 and publication_16, seem like similar columns having the corresponding names to the pub 4's column so should I delete the publication_16 column. 
+```
+
+-Create a table that counts all entries by year.
+
+*The sample data I got is from the same year (2025), I plan to download more data before next class and I plan to talk about how I should split up the categories in which I want to explore the recent presidential moves. 
+
+```{r}
+count_by_day <- trump_dei_news |> 
+ count(published_date) 
+  arrange(desc)
   
-The format string specifies:
+```
 
-%B - full month name (January)
-%d - day of the month (14)
-%Y - 4-digit year (2025)
-%A - full weekday name (Tuesday)
 
-This will create a proper Date column that you can use for analysis and plotting. The resulting date will be in the standard format "2025-01-14".
+-Create a simple column ggplot chart that shows the total entries by year
+```{r}
+count_by_day|> 
+  ggplot(aes(x = published_date, y = n)) +
+  ylab("Top Newspapers Count") +
+  xlab("") +
+  geom_line(color = "steelblue", size = 1) +
+  labs(title = "Total Entries By Day",
+       subtitle = "Source: Nexis Uni Data ",
+       caption = "Graphic by Tiasia Saunders, 2/16/2025")
+```
 
-#count years, publications, etc. create a ggplot
+ 
+
+Armed with your data analysis, write a 250 word memo at the end of the R markdown document that summarizes your findings. Use this opportunity to ask questions or note any major flaws in the data.
+
+
+All in all, I believe that I wanted to split my analysis into four overarching branches of how newspaper media is covering Donald Trumps latest actions: 
+  Media/ Idelogical Framing of Trump's policies 
+  Trump's Rhetoric and Public Responses To It 
+  Trump's Policy Decisions on DEI/ Civil Rights 
+   - Media portrayal of Trump’s cuts to DEI programs and their impact
+  - Differences in terminology and framing across news sources
+  - Coverage of Trump’s pardoning of January 6th insurrectionists and its implications
+  International Media Cover of Trump's Global Policies 
+  -How foreign news outlets report on Trump’s withdrawal from the WHO
+  -Reactions to U.S. trade tariffs and economic policies under Trump
+  -Differences in U.S. vs. international framing of Trump’s global impact
+  
+As of now, I think I will narrow my focus to Trumps policy decisions on DEI programs, and how international media are covering Trumps global policies. I believe that this will help me get an understanding of how international analysts are discussing Trump and the implications of his withdrewing from the World Health Organization and the Paris Climate Agreement plan. International media may draw parallels between his domestic rollbacks on diversity initiatives and his disengagement from global cooperation, framing them as part of a larger effort to reshape the U.S.'s role in both social and diplomatic areas. 
+
+For my analysis, my dataset is pretty clean although I would change a few columns name, to make them more comprehensibale for me when working with the data. For my graph, I am not shoked that there were a spike of outlets discussing Trump's impact on DEI prgorams during the end of January considering that is when it happened. I would want to delete the publication_16 colunn becasue it is bascially the same as the publication_4 column. I would change the publication_type_5 to publicaiton_type. Additionally, I would change the publication_4 column's name to publication_outlet for more clarity. Lastly, I have downloaded other sets of articles that I think will help me with my new focus for the project. Please let me know what you think. 
