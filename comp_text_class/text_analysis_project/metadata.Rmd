@@ -38,10 +38,6 @@ trump_dei_news <- trump_dei_news |>
 ```
 
 
-# fix date
-```{r}
-bmore <- bmore |> 
-  mutate(date = as.Date(strptime(published_date, format = "%B %d, %Y %A")))
 ```
 
 How many rows and columns does this dataset has? 
