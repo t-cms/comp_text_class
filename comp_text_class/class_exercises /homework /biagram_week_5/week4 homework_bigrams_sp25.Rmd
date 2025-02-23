@@ -1,0 +1,125 @@
+---
+title: "Week 4 Bigrams Homework"
+author: "Rob Wells"
+date: '2025-02-20'
+output: html_document
+---
+
+# Jour 689 Spring 2025:
+
+In this exercise, you will import the Nexis spreadsheet and create bigrams from the headlines
+
+Setup. These instructions are important. Follow them carefully
+
+1) Create a new folder called "bigrams_week_5" in your class folder
+2) Copy this file to "bigrams_week_5"
+3) Copy your spreadsheet to "bigrams_week_5"
+4) Create an .Rproj file that points to "bigrams_week_5"
+
+```{r}
+#load tidyverse, tidytext, rio, janitor libraries
+library(tidytext)
+library(tidyverse)
+library(rio)
+library(janitor)
+
+```
+
+```{r}
+#Import spreadsheet using rio::import and clean the names
+
+
+trump_dei <- rio::import("trump_dei_news.XLSX") |> 
+  clean_names()
+
+
+```
+# Tokenize the hlead column
+
+Copy the code from the in-class bigrams exercise and tokenize just the hlead column from your dataframe
+
+Hint: you're changing just one variable
+
+```{r}
+
+stories <- str_replace_all(trump_dei$hlead, "- ", "")
+stories_df <- tibble(stories,)
+
+# unnest includes lower, punct removal
+
+stories_tokenized <- stories_df %>%
+  unnest_tokens(word,stories)
+
+stories_tokenized
+
+```
+
+#Remove stopwords and count the words
+```{r}
+
+stories_tokenized <- stories_tokenized |>
+  anti_join(stop_words, by = c("word" = "word")) 
+
+```
+
+# Word Count
+
+```{r}
+story_word_ct <- stories_tokenized %>%
+  count(word, sort=TRUE)
+```
+
+
+# Create Bigrams
+
+
+```{r}
+bigrams <- stories_df %>%
+  unnest_tokens(bigram, stories, token="ngrams", n=2)
+
+bigrams
+
+#Filter out stop words.
+
+bigrams1 <- bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+filtered_bigrams <- bigrams1 %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word) |> 
+    filter(!is.na(word1)) |> 
+     filter(!is.na(word2))
+
+counted_bigrams <- filtered_bigrams %>%
+  count(word1, word2, sort = TRUE)
+
+
+
+
+```
+
+Count the number of domestic versus international outlets 
+```{r}
+count_location <- trump_dei |> 
+  
+#use the ifelse and using international as the condititional so if the value is that it counts as international and everything else return as domestic in the count 
+  mutate(publication_type = ifelse(publication_location == "International", "International", "Domestic")) |>
+  group_by(publication_type) |>
+  summarise(count = n())
+  
+```
+
+
+
+# Write 250 words about what your learned analyzing the list of tokens and bigrams. Include questions about the process and any difficulties you encountered.
+
+Comparing international coverage vs domestic coverage of Trump policies and latest actions. 
+
+I am not surprised that DEI and Trump are the first two words on my filtered bigrams table. Following that, bigrams such as dei workers, office president.  Despite this, I am eager to explore other bigrams such as cbc condemed, condemend president, deadliest u.s., dei madness, elite status, outcry morning, systemic discrimination, and targeted diversity. I want to know what this all means in coverage of Trump's elimating DEI iniatives and federal workers. 
+  
+Are these news outlets reporting the issue accurately and objectively?
+Does the level of objectivity vary based on the outlet and its location?
+How do different AP and journalistic standards impact the reporting of these serious issues?
+
+I decided to count the number of outlets of domestic vs international news outlets in my trump_dei table, and the count is international= 30 and domestic= 70. I stored this information in a new table called count_location. Furthermore, I am interested in exploring other ways to analze the content in order to reach a sound conclusion as to what the overall comparsion is saying. I would like to know if there is a way to split the table based on international and domestic outlets. Also, I want to know how perform an accurate and consistent textual analysis for a sound argument in the paper (I am sure I will learn how to do this in class!). I am trying to distinctly point out if there is a stark difference or none at all, keeping in mind the traditional journalistc values in each region. I also plan to download 3-5 100 news outlets datasets based on varying categories of Trump's latest actions since inaguration. I would like to know your opinion about adding Elon Musk to the analysis. I plan to have a fleshed out pitch and another rmd file to show you the other datasets I donwloaded. 
+ 

@@ -22,6 +22,7 @@ library(tidyverse)
 library(janitor)
 library(rio)
 library(dplyr)
+library(lubridate)
 ```
 #Import your data 
 ```{r}
@@ -34,11 +35,12 @@ trump_dei_news<- rio::import("trump_dei_news.XLSX")
 # Clean names
 ```{r}
 trump_dei_news <- trump_dei_news |>
-  clean_names()
+  clean_names()  
+  
 ```
 
 
-```
+
 
 How many rows and columns does this dataset has? 
 
@@ -46,21 +48,21 @@ How many rows and columns does this dataset has?
 
 print(paste0("This dataset has ", nrow(trump_dei_news), " rows and ", ncol(trump_dei_news), " columns."))
 
-
 ```
 
 Create a table that displays a count of the top 20 newspaper_city entries. Filter out the NA values. 
 
 ```{r}
 top_newspapers <- trump_dei_news |>
-  filter(!is.na(publication_4)) |> 
+  filter(!is.na(publication_4, publication_16)) |> 
   count(publication_4)|> 
   top_n(20, n) |>
   arrange(desc( n)) |>
 print(top_newspapers)
 
-#have a question about the columns named, publication_4 and publication_16, seem like similar columns having the corresponding names to the pub 4's column so should I delete the publication_16 column. 
+#have a question about the columns named, publication_4 and publication_16, seem like similar columns having the corresponding names to the pub 4's column so should I delete the publication_16 column.
 ```
+
 
 -Create a table that counts all entries by year.
 
@@ -86,7 +88,19 @@ count_by_day|>
        caption = "Graphic by Tiasia Saunders, 2/16/2025")
 ```
 
+ Tips/Tricks: 
  
+ c() = stands for concatenate (or combine). It is used to create vectors by combining multiple values into a single vector
+-c() = cut columns, can have multiple columns 
+count = can have multiple column names in it, to count multiple values in a column 
+ glimpse = to get a breakdown of columns, data types, and column value 
+ date = y/m/d = standard date format (ex: mutate(date =as.Date(date, format = "%Y %m %d)))
+ is.na(x): Checks if elements in x are NA (returns TRUE for missing values and FALSE for others).
+!is.na(x): Negates the is.na() result, meaning it keeps non-NA values (returns TRUE for non-missing values and FALSE for NAs).
+ 
+
+
+Response for Assignment 1: 
 
 Armed with your data analysis, write a 250 word memo at the end of the R markdown document that summarizes your findings. Use this opportunity to ask questions or note any major flaws in the data.
 

@@ -1,0 +1,25 @@
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(janitor)
+library(rio)
+
+
+```
+
+
+```{r}
+
+applicant_gender <- read_csv("nasa_gender.csv") |>
+
+clean_names()
+```
+
+
+```{r}
+
+#import other datasets 
+
+
+```
